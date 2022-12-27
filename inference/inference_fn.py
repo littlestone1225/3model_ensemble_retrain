@@ -28,7 +28,7 @@ from utils import os_makedirs, shutil_move
 from logger import get_logger
 
 sys.path.append(os.path.join(aoi_dir, "data_preprocess"))
-from remove_black_border import remove_black_border
+from remove_black_border import remove_border
 from crop_small_image import crop_sliding_window
 from csv_json_conversion import csv_to_json, json_to_bbox
 
@@ -41,7 +41,7 @@ from ensemble import ensemble
 
 sys.path.append(os.path.join(aoi_dir, "YOLOv4"))
 import darknet
-from YOLOv4.darknet_inference import image_detection, batch_detection
+from darknet_inference import image_detection, batch_detection
 
 sys.path.append(os.path.join(aoi_dir, "detectron2/projects/CenterNet2"))
 from centernet.config import add_centernet_config
@@ -114,7 +114,7 @@ def dequeue_image_file(input_dict, image_file_queue, ensemble_parent_conn, model
 
         if image_wo_border_dir:
             # Save the without-border image to image_wo_border_dir
-            xmin, ymin, xmax, ymax = remove_black_border(image, None)
+            xmin, ymin, xmax, ymax = remove_border(image, None)
             image_wo_border = image[ymin:ymax,xmin:xmax]
             image_wo_border_file_path = os.path.join(image_wo_border_dir, image_file_name)
             cv2.imwrite(image_wo_border_file_path, image_wo_border, [cv2.IMWRITE_PNG_COMPRESSION, 0])

@@ -38,7 +38,7 @@ from centernet.config import add_centernet_config
 
 sys.path.append(os.path.join(aoi_dir, "YOLOv4"))
 import darknet
-from YOLOv4.darknet_inference import image_detection, batch_detection, \
+from darknet_inference import image_detection, batch_detection, \
                               Score_threshold, Edge_limit,Batch_size
 
 

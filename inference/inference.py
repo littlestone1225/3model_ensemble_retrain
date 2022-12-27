@@ -33,7 +33,7 @@ from utils import os_makedirs, shutil_move
 from logger import get_logger
 
 sys.path.append(os.path.join(aoi_dir, "data_preprocess"))
-from remove_black_border import remove_black_border
+from remove_black_border import remove_border
 from crop_sliding_window import crop_sliding_window
 from csv_json_conversion import csv_to_json, json_to_csv
 
@@ -45,7 +45,7 @@ from ensemble import ensemble
 
 sys.path.append(os.path.join(aoi_dir, "YOLOv4"))
 import darknet
-from YOLOv4.darknet_inference import image_detection, batch_detection
+from darknet_inference import image_detection, batch_detection
 
 # Read config_file
 config_file = os.path.join(aoi_dir, 'config/config.yaml')
@@ -172,7 +172,7 @@ def dequeue_image_file(image_file_queue, gpu_num):
         image_file_path = os.path.join(image_dir, image_file_name)
         image = cv2.imread(image_file_path)
         logger.info("[dequeue_image_file] gpu_num = {}; image_file_name = {}".format(gpu_num, image_file_name))
-        xmin, ymin, xmax, ymax = remove_black_border(image, None)
+        xmin, ymin, xmax, ymax = remove_border(image, None)
 
         if [xmin, ymin, xmax, ymax] == [0, 0, 0, 0]:
             logger.info("[dequeue_image_file] gpu_num = {}; [xmin, ymin, xmax, ymax] == [0, 0, 0, 0]".format(gpu_num))
