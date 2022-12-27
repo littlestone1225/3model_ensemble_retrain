@@ -98,13 +98,13 @@ def dequeue_image_file(input_dict, image_file_queue, ensemble_parent_conn, model
         if image_file_name == 'EOF':
             if use_centernet2:
                 logger.debug("[dequeue_image_file] gpu_num = {}; centernet2_parent_conn[{}].send('EOF')".format(gpu_num, p_id))
-                centernet2_parent_conn[gpu_num].send(['EOF', 'EOF', 'EOF'])
+                centernet2_parent_conn[p_id].send(['EOF', 'EOF', 'EOF'])
             if use_retinanet:
                 logger.debug("[dequeue_image_file] gpu_num = {}; retinanet_parent_conn[{}].send('EOF')".format(gpu_num, p_id))
-                retinanet_parent_conn[gpu_num].send(['EOF', 'EOF', 'EOF'])
+                retinanet_parent_conn[p_id].send(['EOF', 'EOF', 'EOF'])
             if use_yolov4:
                 logger.debug("[dequeue_image_file] gpu_num = {}; yolov4_parent_conn[{}].send('EOF')".format(gpu_num, p_id))
-                yolov4_parent_conn[gpu_num].send(['EOF', 'EOF', 'EOF'])
+                yolov4_parent_conn[p_id].send(['EOF', 'EOF', 'EOF'])
             logger.info("[dequeue_image_file] gpu_num = {}; break".format(gpu_num))
             break
 
@@ -188,7 +188,7 @@ def run_centernet2(input_dict, centernet2_child_conn, gpu_num, p_id):
 
     while 1:
         logger.debug("[run_centernet2] gpu_num = {}; centernet2_child_conn[{}].recv()".format(gpu_num, p_id))
-        image_wo_border_dir, image_file_name, image_shape = centernet2_child_conn[gpu_num].recv()
+        image_wo_border_dir, image_file_name, image_shape = centernet2_child_conn[p_id].recv()
 
         if image_file_name == 'EOF':
             logger.debug("[run_centernet2] gpu_num = {}; centernet2_child_conn[{}].send('EOF')".format(gpu_num, p_id))
@@ -252,7 +252,7 @@ def run_retinanet(input_dict, retinanet_child_conn, gpu_num, p_id):
 
     while 1:
         logger.debug("[run_retinanet] gpu_num = {}; retinanet_child_conn[{}].recv()".format(gpu_num, p_id))
-        image_wo_border_dir, image_file_name, image_shape = retinanet_child_conn[gpu_num].recv()
+        image_wo_border_dir, image_file_name, image_shape = retinanet_child_conn[p_id].recv()
 
         if image_file_name == 'EOF':
             logger.debug("[run_retinanet] gpu_num = {}; retinanet_child_conn[{}].send('EOF')".format(gpu_num, p_id))
@@ -308,7 +308,7 @@ def run_yolov4(input_dict, yolov4_child_conn, gpu_num, p_id):
 
     while 1:
         logger.debug("[run_yolov4] gpu_num = {}; yolov4_child_conn[{}].recv()".format(gpu_num, p_id))
-        image_wo_border_dir, image_file_name, image_shape = yolov4_child_conn[gpu_num].recv()
+        image_wo_border_dir, image_file_name, image_shape = yolov4_child_conn[p_id].recv()
 
         if image_file_name == 'EOF':
             logger.debug("[run_yolov4] gpu_num = {}; yolov4_child_conn[{}].send('EOF')".format(gpu_num, p_id))
@@ -337,7 +337,7 @@ def run_yolov4(input_dict, yolov4_child_conn, gpu_num, p_id):
 
         json_file_name = os.path.splitext(image_file_name)[0] + '.json'
         logger.debug("[run_yolov4] gpu_num = {}; yolov4_child_conn[{}].send()".format(gpu_num, p_id))
-        yolov4_child_conn[gpu_num].send([image_wo_border_dir, json_file_name])
+        yolov4_child_conn[p_id].send([image_wo_border_dir, json_file_name])
 
 def run_ensemble(input_dict, models_parent_conn, ensemble_child_conn, ensemble_time_parent_conn, gpu_num, p_id):
     centernet2_label_dir = input_dict['centernet2_label_dir']
@@ -546,7 +546,7 @@ def inference(input_dict):
     for gpu_num in gpu_list:
         image_file_queue.put("EOF")
 
-    for gpu_num in gpu_list:
+    for p_id, gpu_num in enumerate(gpu_list):
         p_dequeue_image_file[p_id].join()
         if use_centernet2:
             p_centernet2[p_id].join()
