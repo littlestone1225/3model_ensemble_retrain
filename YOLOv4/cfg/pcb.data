@@ -1,0 +1,6 @@
+classes = 4
+train = /home/aoi/AOI_PCB_Retrain_my/YOLOv4/cfg/train.txt
+valid = /home/aoi/AOI_PCB_Retrain_my/YOLOv4/cfg/valid.txt
+names = /home/aoi/AOI_PCB_Retrain_my/YOLOv4/cfg/pcb.names
+backup = /home/aoi/AOI_PCB_Retrain_my/YOLOv4/weights
+eval = pcb-512
