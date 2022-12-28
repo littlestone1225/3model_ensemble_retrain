@@ -127,9 +127,9 @@ else:
 
 
 # 2. empty previous training model
-#if os.path.exists(Yolo_weights_path):
-   #shutil.rmtree(os.path.abspath(Yolo_weights_path), ignore_errors=True)
-#os.makedirs(Yolo_weights_path)
+if os.path.exists(Yolo_weights_path):
+    shutil.rmtree(os.path.abspath(Yolo_weights_path), ignore_errors=True)
+os.makedirs(Yolo_weights_path)
 
 
 
